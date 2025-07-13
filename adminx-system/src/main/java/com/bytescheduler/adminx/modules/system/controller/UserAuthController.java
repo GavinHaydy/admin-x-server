@@ -2,6 +2,7 @@ package com.bytescheduler.adminx.modules.system.controller;
 
 import com.bytescheduler.adminx.annotation.Log;
 import com.bytescheduler.adminx.common.entity.Result;
+import com.bytescheduler.adminx.enums.ErrorCode;
 import com.bytescheduler.adminx.enums.OperationType;
 import com.bytescheduler.adminx.modules.system.dto.request.LoginRequest;
 import com.bytescheduler.adminx.modules.system.dto.request.PasswordResetRequest;
@@ -13,6 +14,7 @@ import com.bytescheduler.adminx.modules.system.service.AuthService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +26,7 @@ import javax.validation.Valid;
 public class UserAuthController {
 
     private final AuthService authService;
+    private final MessageSource messageSource;
 
     @ApiOperation("用户注册")
     @Log(module = "用户注册", type = OperationType.USER_REGISTER, value = "用户注册")
@@ -52,7 +55,7 @@ public class UserAuthController {
     @Log(module = "获取图片验证码", type = OperationType.OTHER, value = "获取图片验证码")
     @GetMapping("/captcha")
     public Result<CaptchaResponse> getCaptcha() {
-        return Result.success(authService.generateCaptcha());
+        return Result.of(ErrorCode.CAPTCHA_NOTFOUND,messageSource,authService.generateCaptcha());
     }
 
     @ApiOperation("获取邮箱验证码")
